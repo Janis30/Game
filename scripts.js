@@ -4,6 +4,8 @@ function setup (){
     createBubble()
 }
 
+let lives = 3;
+
 let bubbles = [];
 
 let score = 0;
@@ -15,16 +17,16 @@ const spawnTime = 1000;
 let currentTime = 10;
 let lastCreationTime = 0;
 
-let bubbleColor = ["red", "blue", "orange", "green", "pink"];
 
 function createBubble(){
-    bubbleColor = color (random(bubbleColor))
+    let bubbleColor = ["red", "purple", "blue", "orange", "green", "pink"];
 
     bubbles.push ( {
         x: random (25, 375),
         y: 0,
         r: 25,
-        speed: random (5, 10 * score/100),
+        speed: random (1,3 * score/200),
+        color: random(bubbleColor)
     })
     lastCreationTime = new Date().getTime();
 }
@@ -39,15 +41,16 @@ let hero = {
 
 function draw (){
     background ("white")
-    fill (155)
+    fill (0)
     circle (hero.x, hero.y, hero.r)
     textSize(32)
     text(score, 300, 50)
 
-    life();
+    lifeRect();
+    heroDies();
    
-    fill (bubbleColor)
     for(let [index, bubble] of bubbles.entries()){
+        fill (bubble.color)
         circle(bubble.x, bubble.y, bubble.r)
         bubble.y = bubble.y + bubble.speed
         isHit(hero, bubble)
@@ -63,7 +66,7 @@ function draw (){
     hero.x = constrain(hero.x, (hero.r/2), 400 - (hero.r/2));
 }
 
-function keyReleased(){
+function keyPressed(){
 	if (keyCode === LEFT_ARROW){
 		hero.x = hero.x - 10;
 } else if (keyCode === RIGHT_ARROW) {
@@ -75,49 +78,74 @@ function isOffScreen(bubble, index){
     if(bubble.y > 800){
         bubbles.splice(index,1)
         console.log(bubbles)
-        score = score + 10
-        speedMultiplier = 20
+        //score = score + 10
+        speedMultiplier = 5
     }
 
 }
 
-
 function isHit(hero, bubble){
     if(bubble.x > hero.x && bubble.x + bubble.r < hero.x + hero.r){
         if(bubble.y + bubble.r > hero.y && bubble.y + bubble.r < hero.y + hero.r){
-            console.log("hit!")
-            window.location.reload();
+            
+            if(bubble.color = "blue"){
+                console.log("hit!");
+                bubble.x = bubble.x +1;
+                score = score + 10;
+            }else if (bubble.color = "red"){
+                window.location.reload();
+            }
         }
     
     }
 }
 
+
 // show lifes of character 
-
-function life(){
-    if(keyCode === LEFT_ARROW){
-        fill ("red");
-    }else if (keyCode === RIGHT_ARROW){
-        fill ("blue")
-    }
-
+function lifeRect(){
     textSize(12);
     text ("Lives", 10, 10);
-    rect (20,20,10,10),
-    rect (40,20,10,10),
-    rect (60,20,10,10)  
+
+    let lives = [
+        {
+            color: "gray",
+            x: 20,
+            y: 20,
+            w: 10,
+            h: 10,
+            deadColor: "black"
+        },
+        {
+            color: "gray",
+            x: 40,
+            y: 20,
+            w: 10,
+            h: 10,
+            deadColor: "black"
+        },
+        {
+            color: "gray",
+            x: 60,
+            y: 20,
+            w: 10,
+            h: 10,
+            deadColor: "black"  
+        }
+    ]
+    for (let life of lives){
+        fill(life.color);
+        rect(life.x, life.y, life.w, life.h)
+    }
+            
+            // if(bubble.color = "red"){
+            //     fill(deadColor)
+            // }
 }
 
+//Hero dies
+function heroDies(bubble){
+    console.log(lives)
+    
+}
 
-//Increase bubble size
-
-// function bubbleIncrease(){
-//     if(bubbleColor = "blue"){
-//             hero + 1;
-//     }else if (bubbleColor = "purple"){
-//             hero - 1;
-//     }else if (bubbleColor = "red"){
-//             hero = 0;
-//     }
-// }
 
