@@ -1,3 +1,4 @@
+let screen = 0;
 
 function setup (){
     createCanvas(400, 800)
@@ -40,14 +41,23 @@ let hero = {
 
 
 function draw (){
-    background ("white")
-    fill (0)
-    circle (hero.x, hero.y, hero.r)
-    textSize(32)
-    text(score, 300, 50)
+    if (screen == 0){
 
-    lifeRect();
-    heroDies();
+        background (0)
+        fill(255)
+        textAlign(CENTER)
+        text('Click to start', width/2, height/2)
+    
+    }else if (screen == 1){
+
+        background ("white")
+        fill (0)
+        circle (hero.x, hero.y, hero.r)
+        textSize(32)
+        text(score, 300, 50)
+
+        lifeRect();
+    // heroDies();
    
     for(let [index, bubble] of bubbles.entries()){
         fill (bubble.color)
@@ -64,6 +74,9 @@ function draw (){
     }
 
     hero.x = constrain(hero.x, (hero.r/2), 400 - (hero.r/2));
+
+    console.log(lives)
+    }
 }
 
 function keyPressed(){
@@ -143,9 +156,18 @@ function lifeRect(){
 }
 
 //Hero dies
-function heroDies(bubble){
-    console.log(lives)
-    
-}
-
+function heroDies(bubble, hero){
+   
+    if (bubble("red").overlaping(hero)){
+      lives = lives -1;
+    }else if (bubble("purple").overlaping(hero))
+      hero.x = hero.x +10;
+      
+  }
+  
+  function mousePressed(){
+      if (screen == 0) {
+          screen = 1;
+      }
+    }
 
