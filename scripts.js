@@ -1,7 +1,12 @@
 let screen = 0;
+// let blowFish;
+
+// function preload(){
+//     blowFish = loadImage("blowfish.png")
+// }
 
 function setup (){
-    createCanvas(400, 800)
+    createCanvas(500, 800)
     createBubble()
 }
 
@@ -12,7 +17,7 @@ let bubbles = [];
 let score = 0;
 let speedMultiplier = 0;
 
-// Timers fro tracking our bubble creation
+// Timers for tracking our bubble creation
 const spawnTime = 1000;
 let currentTime = 10;
 let lastCreationTime = 0;
@@ -24,7 +29,7 @@ function createBubble(){
     bubbles.push ( {
         x: random (25, 375),
         y: 0,
-        r: 25,
+        r: random (25, 50),
         speed: random (1,3 * score/200),
         color: random(bubbleColor),
         hit: false,
@@ -36,7 +41,7 @@ function createBubble(){
 
 let hero = {
     x: 200,
-    y: 700,
+    y: 775,
     r: 50,
     lives: 3,
 }
@@ -53,10 +58,14 @@ function draw (){
     }else if (screen == 1){
 
         background ("white")
+        // image(blowFish, hero.x, hero.y, hero.r)
         fill (0)
         circle (hero.x, hero.y, hero.r)
-        textSize(32)
-        text(score, 300, 50)
+        fill(255)
+        rect(400, 0, 100, 800)
+        fill("blue")
+        textSize(16)
+        text(score, 430, 80)
 
         lifeRect();
        
@@ -65,8 +74,6 @@ function draw (){
         fill (bubble.color)
         circle(bubble.x, bubble.y, bubble.r)
         bubble.y = bubble.y + bubble.speed
-        // isHit(hero, bubble)
-
         bubble.hit = collideCircleCircle(bubble.x, bubble.y, bubble.r, hero.x, hero.y, hero.r)
         bubbleHitHero(bubble, index)
         isOffScreen(bubble, index)
@@ -84,20 +91,37 @@ function draw (){
     }
 }
 
-// Red bubble kill hero
+// Bubbles hit hero
 function bubbleHitHero(bubble, index){
-    if(bubble.hit == true){
+    if(bubble.hit == true && bubble.color == "red"){
         bubbles.splice(index, 1)
-        
-
-        if(bubble.color == "red"){
-            console.log('hit')
-             hero.lives = hero.lives - 1
+        hero.lives = hero.lives - 1
         }
-        
-    }else{
-       
-    }
+
+        if(bubble.hit == true && bubble.color == "blue"){
+            bubbles.splice(index, 1);
+            score = score + 10;
+        }
+
+        if(bubble.hit == true && bubble.color == "purple"){
+            bubbles.splice(index, 1);
+            score = score + 20
+        }
+
+        if(bubble.hit == true && bubble.color == "pink"){
+            bubbles.splice(index, 1);
+            score = score - 5
+        }
+
+        if(bubble.hit == true && bubble.color == "orange"){
+            bubbles.splice(index, 1);
+            score = score - 10
+        }
+
+        if(bubble.hit == true && bubble.color == "green"){
+            bubbles.splice(index, 1);
+            score = score + 1
+        }
 }
 
 function keyPressed(){
@@ -111,84 +135,73 @@ function keyPressed(){
 function isOffScreen(bubble, index){
     if(bubble.y > 800){
         bubbles.splice(index,1)
-        // console.log(bubbles)
-        //score = score + 10
-        speedMultiplier = 5
+//         // console.log(bubbles)
+//         //score = score + 10
+//         speedMultiplier = 5
     }
 
 }
 
-// function isHit(hero, bubble){
-//     if(bubble.x > hero.x && bubble.x + bubble.r < hero.x + hero.r){
-//         if(bubble.y + bubble.r > hero.y && bubble.y + bubble.r < hero.y + hero.r){
-            
-//             if(bubble.color = "blue"){
-//                 console.log("hit!");
-//                 bubble.x = bubble.x +1;
-//                 score = score + 10;
-//             }else if (bubble.color = "red"){
-//                 window.location.reload();
-//             }
-//         }
-    
-//     }
-// }
-
-
 // show lifes of character 
 function lifeRect(){
-    textSize(12);
-    text ("Lives", 10, 10);
+    fill("blue")
+    textSize(16);
+    text ("Lives ", 425, 18);
 
     let lives = [
         {
             color: "gray",
-            x: 20,
-            y: 20,
+            x: 420,
+            y: 30,
             w: 10,
             h: 10,
             deadColor: "black"
         },
         {
             color: "gray",
-            x: 40,
-            y: 20,
+            x: 440,
+            y: 30,
             w: 10,
             h: 10,
             deadColor: "black"
         },
         {
             color: "gray",
-            x: 60,
-            y: 20,
+            x: 460,
+            y: 30,
             w: 10,
             h: 10,
             deadColor: "black"  
         }
     ]
+
     for (let life of lives){
         fill(life.color);
         rect(life.x, life.y, life.w, life.h)
-    }
-            
-            // if(bubble.color = "red"){
-            //     fill(deadColor)
-            // }
+
+        if(hero.lives == 2){
+            lives.splice(2)
+        }
+
+            if(hero.lives == 1){
+                lives.splice(1,2)
+            }
+
+                if(hero.lives == 0){
+                    lives.splice(0,1,2)
+                    window.location.reload()
+                }
+     }  
 }
 
-//Hero dies
-function heroDies(bubble, hero){
-   
-    if (bubble("red").overlaping(hero)){
-      lives = lives -1;
-    }else if (bubble("purple").overlaping(hero))
-      hero.x = hero.x +10;
-      
-  }
+function increaseSpeed(){
+    if(score = score + 100) {
+        speedMultiplier = (speedMultiplier + 1)/10
+    }
+}
   
-  function mousePressed(){
-      if (screen == 0) {
-          screen = 1;
+function mousePressed(){
+    if (screen == 0) {
+        screen = 1;
       }
     }
-
